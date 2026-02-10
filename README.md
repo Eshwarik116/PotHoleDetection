@@ -10,22 +10,22 @@
 
 ---
 
-## 🎯 System Overview
+## System Overview
 
 IPDS combines computer vision, multi-object tracking, and sensor fusion to detect, track, and assess pothole severity in real-time. The system uses a **dual ESP32 architecture** for optimal performance and reliability.
 
 ### Key Features
 
-- ✅ **Real-time Detection**: YOLOv8-powered pothole identification
-- ✅ **Multi-Object Tracking**: SORT algorithm prevents duplicate counting
-- ✅ **Sensor Fusion**: Combines visual confidence with accelerometer data
-- ✅ **Event-Driven Architecture**: Sensors query only when needed (95% power savings)
-- ✅ **Geo-Tagged Evidence**: GPS coordinates + RTC timestamps
-- ✅ **Firebase-Ready**: CSV output optimized for cloud deployment
+- **Real-time Detection**: YOLOv8-powered pothole identification
+- **Multi-Object Tracking**: SORT algorithm prevents duplicate counting
+- **Sensor Fusion**: Combines visual confidence with accelerometer data
+- **Event-Driven Architecture**: Sensors query only when needed (95% power savings)
+- **Geo-Tagged Evidence**: GPS coordinates + RTC timestamps
+- **Firebase-Ready**: CSV output optimized for cloud deployment
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### Dual ESP32 Design
 
@@ -73,7 +73,7 @@ graph TB
 
 ---
 
-## 🧠 Core Algorithms
+## Core Algorithms
 
 ### 1. Visual Detection (YOLOv8)
 
@@ -131,7 +131,7 @@ severity = 0.7 × confidence + 0.3 × (jerk_norm)²
 
 ---
 
-## 📡 Communication Protocol
+## Communication Protocol
 
 ### Signal Cascade (13 Steps)
 
@@ -186,7 +186,7 @@ severity = 0.7 × confidence + 0.3 × (jerk_norm)²
 
 ---
 
-## 🔌 Hardware Setup
+## Hardware Setup
 
 ### ESP32-CAM Vision Node
 
@@ -223,7 +223,7 @@ DS3231 RTC:
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Flash ESP32 Devices
 
@@ -261,7 +261,7 @@ Press `q` to stop processing.
 
 ---
 
-## 📊 Output Data
+## Output Data
 
 ### CSV Log Format
 
@@ -284,15 +284,15 @@ date,time,frame_id,pothole_id,confidence,bounding_box_area,aspect_ratio,peak_jer
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Pot Hole Detection/
-├── ESP_32_Code/
-│   ├── esp32_cam_vision_node.ino    # Vision Node firmware
-│   ├── esp32_sensor_node.ino        # Sensor Node firmware
-│   ├── esp_32_code.ino              # Legacy (single ESP32)
-│   └── camera_pins.h                # Camera pin definitions
+├── ESP_32_Code/                     # All ESP32 firmware
+│   ├── esp32_cam_vision_node.ino    # Vision Node firmware (v2)
+│   ├── esp32_sensor_node.ino        # Sensor Node firmware (v2)
+│   ├── esp_32_code.ino              # Legacy single-ESP32 firmware (not used in v2)
+│   └── camera_pins.h                # Camera pin definitions (legacy)
 ├── src/
 │   ├── main.py                      # Main processing script
 │   └── pothole_detection/
@@ -310,13 +310,14 @@ Pot Hole Detection/
 ├── sort.py                          # SORT algorithm (root)
 ├── requirements.txt                 # Python dependencies
 ├── README.md                        # This file
-├── DETAIL.md                        # Comprehensive documentation
-└── wiring.md                        # Legacy wiring guide
+├── docs/
+│   ├── DETAIL.md                    # Comprehensive documentation
+│   └── HARDWARE.md                  # Dual ESP32 wiring and hardware guide
 ```
 
 ---
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### ESP32-CAM Issues
 
@@ -344,7 +345,7 @@ Pot Hole Detection/
 
 ---
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 | Metric | Value |
 |--------|-------|
@@ -356,7 +357,7 @@ Pot Hole Detection/
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] **Edge Computing**: Move YOLOv8 to ESP32-S3 (TFLite Micro)
 - [ ] **LoRa Communication**: 10km range for rural deployment
@@ -366,7 +367,7 @@ Pot Hole Detection/
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[DETAIL.md](DETAIL.md)**: Comprehensive technical documentation
 - **[Setup Guide](setup_guide.md)**: Step-by-step hardware setup
@@ -375,19 +376,19 @@ Pot Hole Detection/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 This project is part of a road safety initiative. Contributions welcome!
 
 ---
 
-## 📄 License
+## License
 
 MIT License - Built for safer roads.
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Sanskar Tiwari**  
 Pothole Detection System v2.0 (Dual ESP32 Architecture)

@@ -6,7 +6,7 @@
 
 ---
 
-## ⚠️ CRITICAL NOTES
+## CRITICAL NOTES
 
 1. **Dual ESP32 Architecture:**
    - **ESP32-CAM Vision Node:** Camera streaming only (no sensors)
@@ -14,7 +14,7 @@
 
 2. **I2C Address Conflict (Sensor Node Only):**
    - MPU6050 and DS3231 both use address `0x68` by default
-   - **SOLUTION:** Connect MPU6050's AD0 pin to 3.3V → Changes address to `0x69`
+   - **SOLUTION:** Connect MPU6050's AD0 pin to 3.3V (changes address to `0x69`)
    - **CRITICAL:** This is mandatory for both sensors to work!
 
 3. **Pull-Up Resistors Required:** I2C bus needs 4.7kΩ pull-ups on SDA and SCL
@@ -29,7 +29,7 @@
 
 ---
 
-## 📋 Components List
+## Components List
 
 | Component | Quantity | Notes |
 |-----------|----------|-------|
@@ -45,7 +45,7 @@
 
 ---
 
-## 🔌 Pin Assignments
+## Pin Assignments
 
 ### ESP32-CAM Vision Node (Camera Only)
 
@@ -70,7 +70,7 @@
 
 ---
 
-## 🔧 Component Wiring
+## Component Wiring
 
 ### Node 1: ESP32-CAM Vision Node
 
@@ -108,7 +108,7 @@ VCC    ──────→   3.3V
 GND    ──────→   GND
 SCL    ──────→   GPIO 22 (I2C SCL)
 SDA    ──────→   GPIO 21 (I2C SDA)
-AD0    ──────→   3.3V  ⚠️ CRITICAL: Sets address to 0x69
+AD0    ──────→   3.3V  CRITICAL: Sets address to 0x69
 INT    ──────→   (Not connected)
 ```
 
@@ -151,7 +151,7 @@ PPS    ──────→   (Not connected)
 - Some GPS modules need 5V, others work with 3.3V - check your module!
 - GPS needs **clear view of sky** for satellite lock
 
-#### 4. I2C Pull-Up Resistors ⚠️ REQUIRED
+#### 4. I2C Pull-Up Resistors (REQUIRED)
 ```
               3.3V
                 │
@@ -168,7 +168,7 @@ PPS    ──────→   (Not connected)
 
 ---
 
-## 📐 Complete Wiring Diagram (Dual ESP32 Architecture)
+## Complete Wiring Diagram (Dual ESP32 Architecture)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -251,7 +251,7 @@ ESP32 Sensor Node:
 
 ---
 
-## 🧪 Testing Checklist
+## Testing Checklist
 
 ### Before Powering On:
 
@@ -295,7 +295,7 @@ ESP32 Sensor Node:
 
 ---
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Vision Node Issues
 
@@ -346,18 +346,18 @@ ESP32 Sensor Node:
 
 ---
 
-## 📊 I2C Address Reference
+## I2C Address Reference
 
 | Device | Default Address | Modified Address | How to Change |
 |--------|----------------|------------------|---------------|
-| MPU6050 | 0x68 | **0x69** ✓ | Connect AD0 to 3.3V |
+| MPU6050 | 0x68 | **0x69** | Connect AD0 to 3.3V |
 | DS3231 | 0x68 | Cannot change | Fixed at 0x68 |
 
-**⚠️ This is why MPU6050's AD0 MUST be connected to 3.3V!**
+**This is why MPU6050's AD0 MUST be connected to 3.3V.**
 
 ---
 
-## 🎯 Final Pin Summary
+## Final Pin Summary
 
 ### ESP32-CAM Vision Node
 ```
@@ -396,7 +396,7 @@ Network:
 
 ---
 
-## 📝 Important Notes
+## Important Notes
 
 ### Dual ESP32 Benefits:
 - **Separation of Concerns:** Camera and sensors on different devices
@@ -416,7 +416,7 @@ Network:
 
 ---
 
-## ✅ Success Indicators
+## Success Indicators
 
 ### Vision Node Serial Output:
 ```
@@ -425,11 +425,11 @@ ESP32-CAM VISION NODE
 Dual ESP32 Architecture v2.0
 ========================================
 
-Initializing watchdog timer (30s)... OK ✓
-Initializing OV2640 camera... SUCCESS ✓
-Connecting to WiFi... CONNECTED ✓
+Initializing watchdog timer (30s)... OK
+Initializing OV2640 camera... SUCCESS
+Connecting to WiFi... CONNECTED
 IP Address: 192.168.x.x
-Starting stream server on port 81... SUCCESS ✓
+Starting stream server on port 81... SUCCESS
 
 ========================================
 VISION NODE READY
@@ -448,12 +448,12 @@ Dual ESP32 Architecture v2.0
 ========================================
 
 I2C initialized on GPIO21 (SDA) & GPIO22 (SCL)
-Initializing MPU6050... FOUND at 0x69 ✓ (AD0=HIGH, no conflict with RTC)
+Initializing MPU6050... FOUND at 0x69 (AD0=HIGH, no conflict with RTC)
   Range: ±8g
   Filter: 21 Hz
 Initializing NEO-6M GPS... OK (GPIO16/GPIO17)
-Initializing DS3231 RTC... FOUND ✓
-Connecting to WiFi... CONNECTED ✓
+Initializing DS3231 RTC... FOUND
+Connecting to WiFi... CONNECTED
 IP Address: 192.168.x.x
 
 ========================================

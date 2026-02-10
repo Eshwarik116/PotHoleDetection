@@ -902,10 +902,10 @@ LOG_PATH = os.path.join(OUTPUTS_DIR, 'logs', 'pothole_log.csv')
 ```bash
 # Serial Monitor (115200 baud)
 # Expected output:
-Initializing OV2640 camera... SUCCESS ✓
-Connecting to WiFi... CONNECTED ✓
+Initializing OV2640 camera... SUCCESS
+Connecting to WiFi... CONNECTED
 IP Address: 192.168.1.100
-Starting stream server on port 81... SUCCESS ✓
+Starting stream server on port 81... SUCCESS
 Vision node is now streaming...
 ```
 
@@ -920,12 +920,12 @@ http://192.168.1.100:81/stream
 # Serial Monitor (115200 baud)
 # Expected output:
 I2C initialized on GPIO21 (SDA) & GPIO22 (SCL)
-Initializing MPU6050... FOUND at 0x68 ✓
+Initializing MPU6050... FOUND at 0x68
 Initializing NEO-6M GPS... OK (GPIO16/GPIO17)
-  GPS FIX ACQUIRED: 28.704060, 77.102493 ✓
-Initializing DS3231 RTC... FOUND ✓
+  GPS FIX ACQUIRED: 28.704060, 77.102493
+Initializing DS3231 RTC... FOUND
   Current time: 2026-02-10 14:23:45
-Connecting to WiFi... CONNECTED ✓
+Connecting to WiFi... CONNECTED
 IP Address: 192.168.1.101
 HTTP server started on port 80
 Sensor node is idle, waiting for queries...

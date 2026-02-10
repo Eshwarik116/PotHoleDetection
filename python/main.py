@@ -14,7 +14,7 @@ from pothole_detection.tracker import PotholeTracker
 # --- CONFIGURATION ---
 LIVE_MODE = True  # Set to True to use ESP32 devices, False for video file
 
-# ⚠️ IMPORTANT: UPDATE THESE IP ADDRESSES TO MATCH YOUR ESP32 DEVICES
+# IMPORTANT: UPDATE THESE IP ADDRESSES TO MATCH YOUR ESP32 DEVICES
 # After uploading firmware, check Serial Monitor to get the correct IP addresses
 # Both ESP32 devices must be on the same WiFi network as this computer
 
