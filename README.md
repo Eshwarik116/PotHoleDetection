@@ -291,7 +291,6 @@ Pot Hole Detection/
 ├── ESP_32_Code/                     # All ESP32 firmware
 │   ├── esp32_cam_vision_node.ino    # Vision Node firmware (v2)
 │   ├── esp32_sensor_node.ino        # Sensor Node firmware (v2)
-│   ├── esp_32_code.ino              # Legacy single-ESP32 firmware (not used in v2)
 │   └── camera_pins.h                # Camera pin definitions (legacy)
 ├── src/
 │   ├── main.py                      # Main processing script
