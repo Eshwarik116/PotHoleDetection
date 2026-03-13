@@ -88,10 +88,18 @@ A video window will open showing the live feed with bounding boxes and tracking 
 
 ---
 
-## Future Improvements
-- **Edge Implementation:** Migrate the YOLOv8 model directly onto an ESP32-S3 using TensorFlow Lite Micro.
-- **Cloud Dashboard:** Build a Next.js frontend integrated with Firebase to visualize the CSV logs on a live map.
-- **LoRaWAN Integration:** Replace WiFi with LoRa for remote deployments where internet access is restricted.
+## Future Scope
+- **Dashcam Integration:** Utilize ubiquitous vehicle dashcams and smartphone apps to passively crowdsource road condition data without custom hardware.
+- **System Scalability:** Migrate processing to distributed cloud infrastructure (AWS/GCP) using microservices and Kubernetes to handle millions of edge devices.
+- **Government Portals:** Provide secure web dashboards for municipal bodies featuring real-time heatmaps and predictive analytics for budget allocation.
+- **Navigational Alerts:** Integrate with OpenStreetMap (OSM) to issue proactive audio/visual warnings to drivers about upcoming road hazards.
+- **Spatial Database:** Store detections in a highly optimized database (e.g., PostgreSQL with PostGIS) and expose REST APIs for researchers and self-driving models.
+- **Advanced Sensor Integration:** Incorporate LiDAR or Thermal/Infrared cameras for 24/7 visibility regardless of weather, glare, or darkness.
+- **Predictive Maintenance:** Analyze micro-cracks and freeze-thaw weather patterns to predict and map impending road failures before physical potholes form.
+- **V2X Communication:** Broadcast real-time hazard coordinates to trailing autonomous vehicles so they can automatically steer around or brace for impact.
+- **Automated Work-Orders:** Integrate strictly with City ERP software to automatically dispatch repair crews and calculate necessary asphalt volumes for severe hazards.
+- **True Edge Acceleration:** Utilize dedicated AI ASICs (like Google Coral TPU or Hailo-8) to run the entire YOLO pipeline locally without needing a laptop.
+- **Crowdsourcing Incentives:** Implement gamified "micro-bounties" (e.g., toll credits or tax rebates) to incentivize citizens to run the detection app while commuting.
 
 ## Contributors
 - **Sanskar Tiwari** - *Core Architecture & ML Pipeline*
