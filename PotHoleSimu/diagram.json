@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "author": "Sanskar Tiwari",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": -140.18, "left": -218.48, "attrs": {} },
+    { "type": "wokwi-ds1307", "id": "rtc1", "top": 138.6, "left": -201.5, "attrs": {} },
+    { "type": "chip-gps-neo6m", "id": "gps1", "top": 220, "left": 240, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "imu1:VCC", "esp:3V3", "red", [] ],
+    [ "imu1:GND", "esp:GND.1", "black", [] ],
+    [ "imu1:SDA", "esp:14", "green", [] ],
+    [ "imu1:SCL", "esp:15", "green", [] ],
+    [ "rtc1:VCC", "esp:3V3", "red", [] ],
+    [ "rtc1:GND", "esp:GND.1", "black", [] ],
+    [ "rtc1:SDA", "esp:14", "green", [] ],
+    [ "rtc1:SCL", "esp:15", "green", [] ],
+    [ "gps1:VCC", "esp:3V3", "red", [] ],
+    [ "gps1:GND", "esp:GND.1", "black", [] ],
+    [ "gps1:TX", "esp:16", "blue", [] ],
+    [ "esp:13", "gps1:RX", "blue", [] ]
+  ],
+  "dependencies": {}
+}
