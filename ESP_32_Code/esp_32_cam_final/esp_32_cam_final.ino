@@ -56,6 +56,9 @@ static esp_err_t stream_handler(httpd_req_t *req) {
 
     esp_camera_fb_return(fb);
     fb = NULL;
+
+    // Yield to the IDLE task briefly so it can feed the watchdog
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
   return res;
 }
@@ -89,14 +92,9 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  // ===== WATCHDOG (NEW API) =====
-  esp_task_wdt_config_t wdt_config = {
-    .timeout_ms = 30000,
-    .idle_core_mask = (1 << portNUM_PROCESSORS) - 1,
-    .trigger_panic = true
-  };
-  esp_task_wdt_init(&wdt_config);
-  esp_task_wdt_add(NULL);
+  // ===== WATCHDOG =====
+  // Removed custom WDT initialization as the Arduino core 3.x already handles it
+  // and overriding it causes the IDLE1 Task to starve and panic.
 
   // ===== CAMERA CONFIG =====
   camera_config_t config;
@@ -143,6 +141,5 @@ void setup() {
 
 /* ================= LOOP ================= */
 void loop() {
-  esp_task_wdt_reset();
   delay(100);
 }

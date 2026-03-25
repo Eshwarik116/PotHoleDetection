@@ -5,3 +5,4 @@ filterpy
 scipy
 matplotlib
 scikit-image
+python-dotenv

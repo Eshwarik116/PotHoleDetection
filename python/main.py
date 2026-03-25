@@ -9,6 +9,22 @@ import math
 import numpy as np
 from typing import List, Tuple, Dict, Set
 
+# --- Path Configuration ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+
+# --- Parse .env Manually ---
+env_path = os.path.join(ROOT_DIR, '.env')
+if os.path.exists(env_path):
+    with open(env_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                key, val = line.split("=", 1)
+                os.environ[key.strip()] = val.strip('"\'')
+
 # Fix OpenCV FFmpeg timeout issue with ESP32 streams
 os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
 
@@ -24,16 +40,12 @@ LIVE_MODE = True  # Set to True to use ESP32 devices, False for video file
 # Both ESP32 devices must be on the same WiFi network as this computer.
 
 # DUAL ESP32 ARCHITECTURE CONFIGURATION
-# [USER ACTION REQUIRED]: Update these IPs!
-ESP32_CAM_IP = "10.78.162.54"      # <--- ESP32-CAM Vision Node IP (Port 81)
-ESP32_SENSOR_IP = "10.78.162.215"   # <--- ESP32 Sensor Node IP (Port 80)
+# Configure ESP32 IPs in the .env file in the project root
+ESP32_CAM_IP = os.getenv("ESP32_CAM_IP", "10.183.109.54")
+ESP32_SENSOR_IP = os.getenv("ESP32_SENSOR_IP", "10.183.109.215")
 
 ESP32_STREAM_URL = f"http://{ESP32_CAM_IP}:81/stream"  # Vision Node (port 81)
 ESP32_SENSOR_URL = f"http://{ESP32_SENSOR_IP}/query"    # Sensor Node (port 80)
-
-# --- Path Configuration ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.dirname(BASE_DIR)
 
 ASSETS_DIR = os.path.join(ROOT_DIR, 'assets')
 OUTPUTS_DIR = os.path.join(ROOT_DIR, 'outputs')
