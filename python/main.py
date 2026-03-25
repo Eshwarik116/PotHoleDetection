@@ -6,7 +6,11 @@ import urllib.request
 import json
 import time
 import math
+import numpy as np
 from typing import List, Tuple, Dict, Set
+
+# Fix OpenCV FFmpeg timeout issue with ESP32 streams
+os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
 
 from pothole_detection.detector import PotholeDetector
 from pothole_detection.tracker import PotholeTracker
@@ -21,8 +25,8 @@ LIVE_MODE = True  # Set to True to use ESP32 devices, False for video file
 
 # DUAL ESP32 ARCHITECTURE CONFIGURATION
 # [USER ACTION REQUIRED]: Update these IPs!
-ESP32_CAM_IP = "192.168.137.100"      # <--- ESP32-CAM Vision Node IP (Port 81)
-ESP32_SENSOR_IP = "192.168.137.101"   # <--- ESP32 Sensor Node IP (Port 80)
+ESP32_CAM_IP = "10.78.162.54"      # <--- ESP32-CAM Vision Node IP (Port 81)
+ESP32_SENSOR_IP = "10.78.162.215"   # <--- ESP32 Sensor Node IP (Port 80)
 
 ESP32_STREAM_URL = f"http://{ESP32_CAM_IP}:81/stream"  # Vision Node (port 81)
 ESP32_SENSOR_URL = f"http://{ESP32_SENSOR_IP}/query"    # Sensor Node (port 80)
@@ -101,7 +105,12 @@ def get_sensor_burst(url: str, pothole_id: int, burst_count: int = 5) -> Tuple[f
                     # Parse ISO8601 timestamp
                     timestamp_str = data.get('timestamp', "2000-01-01T00:00:00")
                     if "T" in timestamp_str:
-                        last_date, last_time = timestamp_str.split("T")
+                        if timestamp_str.startswith("2000"):
+                             # Fallback to local PC time if RTC is unconfigured or battery died
+                             last_date = time.strftime("%Y-%m-%d")
+                             last_time = time.strftime("%H:%M:%S")
+                        else:
+                             last_date, last_time = timestamp_str.split("T")
                     
                     last_lat = data.get('latitude', 0.0)
                     last_lon = data.get('longitude', 0.0)
@@ -229,16 +238,41 @@ def main():
         return
 
     # 3. Video Capture
-    cap = cv2.VideoCapture(video_source)
-    if not cap.isOpened():
-        print(f"Error: Could not open source {video_source}")
-        print("Check IP address or file path.")
-        return
+    if LIVE_MODE:
+        print("Using URL stream reader...")
+        BOUNDARY = b"123456789000000000000987654321"
+        def open_stream():
+            req = urllib.request.Request(video_source)
+            req.add_header("Connection", "close")
+            return urllib.request.urlopen(req, timeout=30)
 
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    if fps == 0: fps = 10.0 # Default fallback for streams
+        stream = None
+        for attempt in range(5):
+            try:
+                stream = open_stream()
+                print("  > Stream connected!")
+                break
+            except Exception as e:
+                print(f"  > Connection attempt {attempt+1} failed: {e}. Retrying in 2s...")
+                time.sleep(2)
+        if stream is None:
+            print("Error: Could not connect to stream after 5 attempts.")
+            return
+
+        bytes_data = bytes()
+        width, height = 320, 240 # QVGA resolution from firmware
+        fps = 10.0
+    else:
+        cap = cv2.VideoCapture(video_source)
+        if not cap.isOpened():
+            print(f"Error: Could not open source {video_source}")
+            print("Check IP address or file path.")
+            return
+
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0: fps = 10.0 # Default fallback for streams
 
     # 4. Output Setup
     os.makedirs(os.path.dirname(OUTPUT_VIDEO_PATH), exist_ok=True)
@@ -265,17 +299,45 @@ def main():
 
     frame_idx = 0
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            if LIVE_MODE:
-                print("Stream disconnected. Retrying...")
-                cap.release()
-                time.sleep(1)
-                cap = cv2.VideoCapture(video_source)
+        if LIVE_MODE:
+            try:
+                bytes_data += stream.read(4096)
+                # Search for JPEG start and end markers
+                start = bytes_data.find(b'\xff\xd8')
+                end = bytes_data.find(b'\xff\xd9', start)
+                if start != -1 and end != -1:
+                    jpg = bytes_data[start:end + 2]
+                    bytes_data = bytes_data[end + 2:]
+                    frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+                    if frame is None:
+                        continue
+                else:
+                    # Need more data; keep buffering
+                    # Prevent buffer from growing unbounded
+                    if len(bytes_data) > 1024 * 1024:
+                        bytes_data = bytes_data[-4096:]
+                    continue
+            except Exception as e:
+                print(f"Stream error: {e}. Reconnecting...")
+                time.sleep(2)
+                try:
+                    stream = open_stream()
+                    bytes_data = bytes()
+                except Exception as e2:
+                    print(f"  Reconnect failed: {e2}")
                 continue
-            else:
+        else:
+            ret, frame = cap.read()
+            if not ret:
                 break
         
+        
+        # Initialize actual frame dimensions once frame is loaded
+        if width == 800 and height == 600 and frame is not None:
+             height, width = frame.shape[:2]
+             ref_y = int(REFERENCE_LINE_RATIO * height)
+             out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc, fps, (width, height))
+             
         frame_idx += 1
         
         # 1. Detect
@@ -345,15 +407,17 @@ def main():
         draw_visuals(frame, tracks, detections, logged_ids, final_severities, ref_y, width, height, track_id_colors)
         
         total_potholes = tracker.get_total_count()
-        cv2.putText(frame, f"Total Unique Potholes: {total_potholes}", (20, 40), FONT, 1, (0, 0, 255), 2)
+        cv2.putText(frame, f"Total Unique Potholes: {total_potholes}", (10, 20), FONT, 0.5, (0, 0, 255), 1)
 
         out.write(frame)
-        cv2.imshow('Pothole Detection', frame) # Enable display
+        display_frame = cv2.resize(frame, (width * 2, height * 2))
+        cv2.imshow('Pothole Detection', display_frame) # Enable display
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
             
-    cap.release()
+    if not LIVE_MODE:
+        cap.release()
     out.release()
     csv_file.close()
     cv2.destroyAllWindows()

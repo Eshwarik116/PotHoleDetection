@@ -80,11 +80,19 @@ void handleQuery() {
   // Fetch RTC Date & Time safely
   String timestamp = "2000-01-01T00:00:00";
   bool rtc_ok = false;
-  try {
+  
+  if (rtc.begin()) {
     DateTime now = rtc.now();
-    timestamp = String(now.timestamp());
-    rtc_ok = true;
-  } catch (...) {
+    char buf[25];
+    snprintf(buf, sizeof(buf), "%04d-%02d-%02dT%02d:%02d:%02d", 
+             now.year(), now.month(), now.day(),
+             now.hour(), now.minute(), now.second());
+    timestamp = String(buf);
+    
+    // Check if RTC lost power (Year 2000 is default)
+    if (now.year() > 2000) {
+        rtc_ok = true;
+    }
   }
 
   // Construct JSON Payload adhering to python's json.loads() expectations
