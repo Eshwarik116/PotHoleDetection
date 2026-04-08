@@ -19,3 +19,13 @@ output/
 
 # Models (Optional: un-comment if you want to commit models)
 # *.pt
+# Node
+node_modules/
+.env
+
+# KiCad
+*.kicad_prl
+.history/
+
+# Backup files
+*.zip
